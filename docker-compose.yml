@@ -1,0 +1,76 @@
+version: '2'
+
+#Les services représentent l'ensemble des containers 
+#Le container volume sert à un fichier partagé
+
+services:
+
+  data:
+    build: data
+    volumes:
+      - "/Users/mkharsa/Desktop/Be-Bound/Developpement/ProjectTest/data/app:/var/www"
+      #-"[chemin]/var/www" pendant le développement en local 
+
+
+  nginx:
+    build: nginx
+    restart: always
+    volumes_from:
+      - data
+    ports:
+      - "127.0.0.1:10446:80"
+    networks:
+      - front
+
+  php-fpm:
+    build: php
+    restart: always
+    volumes_from:
+      - data
+    networks:
+      - front
+      - backend
+      
+  node:
+    image: library/node
+    restart: always
+    volumes_from:
+      - data
+    networks:
+      - front
+      - backend
+    
+  db:
+    build: db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=dbname
+      - MYSQL_USER=dbuser
+      - MYSQL_PASSWORD=secret2
+    ports:
+      - "127.0.0.1:3006:3306"
+   # volumes:
+   #   - "/srv/db/greentecbda:/var/lib/mysql"
+    networks:
+      - backend
+      
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - 8181:80
+    links:
+      - db:db
+    environment:
+      - PMA_ARBITRARY=1
+      - MYSQL_USERNAME=root
+      - MYSQL_ROOT_PASSWORD=secret
+    networks: 
+      - backend
+    #volumes:
+    #  - /sessions
+
+networks:
+  front:
+  backend:

@@ -1,0 +1,9 @@
+Gestion des dépenses pour un plan 
+
+L'utilisateur doit pouvoir: 
+	- S'authentifier
+	- S'enregistrer (nom, prénom, mail), mdp généré et envoyé par mail 
+	- Créer un projet 
+	- Inviter un amis à un projet
+	- Créer une dépense 
+	- Rembourser une dépense 
